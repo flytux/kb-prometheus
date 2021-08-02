@@ -1,0 +1,32 @@
+groups:
+- name: cpu-average-node
+  rules:
+  - record: average_cpu_usage_node
+    expr: 100 - (avg (irate(node_cpu_seconds_total{job="node",mode="idle"}[5m])) * 100)
+    labels:
+      instance: node
+
+  - alert: CpuUsageHigh
+    expr: average_cpu_usage_node  > 50
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: Average CPU Usage {{ $labels.instance }} is High
+      description: Average CPU Usage of {{ $labels.instance }} is {{ $value }}
+
+- name: memory-average-node
+  rules:
+  - record: average_memory_usage_node
+    expr: avg (100 * (1 - ((avg_over_time(node_memory_MemFree_bytes[5m]) + avg_over_time(node_memory_Cached_bytes[5m]) + avg_over_time(node_memory_Buffers_bytes[5m])) / avg_over_time(node_memory_MemTotal_bytes[5m]))))
+    labels:
+      instance: node
+
+  - alert: MemoryUsageHigh
+    expr: average_memory_usage_node  > 50
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: Average Memory Usage {{ $labels.instance }} is High
+      description: Average Memory Usage of {{ $labels.instance }} is {{ $value }}
