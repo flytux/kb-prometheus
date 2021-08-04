@@ -11,7 +11,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-       - 18.117.220.226:9093
+       - 157.245.240.248:9093
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -19,23 +19,31 @@ rule_files:
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
+
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+# The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
   - job_name: 'prometheus'
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
     scrape_interval: 5s
-
     static_configs:
-    - targets: ['18.117.220.226:9090']
+    - targets: ['157.245.240.248:9090']
+
+  - job_name: 'cloudwatch'
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['157.245.240.248:9106']
 
   - job_name: 'node'
-
     static_configs:
-    - targets: ['18.117.220.226:9100']
+    - targets: ['3.14.10.65:9100']
       labels:
-        group: 'kw'
-    - targets: ['18.116.239.123:9100']
+        group: 'was'
+    - targets: ['3.133.119.42:9100']
       labels:
-        group: 'kw2'
+        group: 'db'
+    - targets: ['18.216.28.112:9100']
+      labels:
+        group: 'web'
+    - targets: ['13.59.166.108:9100']
+      labels:
+        group: 'common'
